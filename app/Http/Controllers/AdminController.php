@@ -44,14 +44,14 @@ class AdminController extends Controller
             ->limit(5)
             ->get();
         
-        // Ingresos por mes
+        // Ingresos por mes - PostgreSQL
         $ingresosPorMes = Pago::select(
-                DB::raw('MONTH(created_at) as mes'),
-                DB::raw('YEAR(created_at) as año'),
+                DB::raw('EXTRACT(MONTH FROM created_at) as mes'),
+                DB::raw('EXTRACT(YEAR FROM created_at) as anio'),
                 DB::raw('SUM(monto) as total')
             )
-            ->groupBy('año', 'mes')
-            ->orderBy('año', 'desc')
+            ->groupByRaw('EXTRACT(YEAR FROM created_at), EXTRACT(MONTH FROM created_at)')
+            ->orderBy('anio', 'desc')
             ->orderBy('mes', 'desc')
             ->limit(6)
             ->get();
@@ -115,22 +115,22 @@ class AdminController extends Controller
     public function reportesGenerales()
     {
         $reparacionesPorMes = Reparacion::select(
-                DB::raw('MONTH(created_at) as mes'),
-                DB::raw('YEAR(created_at) as año'),
+                DB::raw('EXTRACT(MONTH FROM created_at) as mes'),
+                DB::raw('EXTRACT(YEAR FROM created_at) as anio'),
                 DB::raw('count(*) as total')
             )
-            ->groupBy('año', 'mes')
-            ->orderBy('año', 'desc')
+            ->groupByRaw('EXTRACT(YEAR FROM created_at), EXTRACT(MONTH FROM created_at)')
+            ->orderBy('anio', 'desc')
             ->orderBy('mes', 'desc')
             ->get();
         
         $ingresosPorMes = Pago::select(
-                DB::raw('MONTH(created_at) as mes'),
-                DB::raw('YEAR(created_at) as año'),
+                DB::raw('EXTRACT(MONTH FROM created_at) as mes'),
+                DB::raw('EXTRACT(YEAR FROM created_at) as anio'),
                 DB::raw('SUM(monto) as total')
             )
-            ->groupBy('año', 'mes')
-            ->orderBy('año', 'desc')
+            ->groupByRaw('EXTRACT(YEAR FROM created_at), EXTRACT(MONTH FROM created_at)')
+            ->orderBy('anio', 'desc')
             ->orderBy('mes', 'desc')
             ->get();
         
