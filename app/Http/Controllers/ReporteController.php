@@ -65,14 +65,14 @@ class ReporteController extends Controller
             ->take(5)
             ->get();
 
-        // Datos adicionales útiles
+        // Reparaciones por mes - PostgreSQL
         $reparacionesPorMes = Reparacion::select(
-                DB::raw('MONTH(created_at) as mes'),
-                DB::raw('YEAR(created_at) as año'),
+                DB::raw('EXTRACT(MONTH FROM created_at) as mes'),
+                DB::raw('EXTRACT(YEAR FROM created_at) as anio'),
                 DB::raw('count(*) as total')
             )
-            ->groupBy('año', 'mes')
-            ->orderBy('año', 'desc')
+            ->groupByRaw('EXTRACT(YEAR FROM created_at), EXTRACT(MONTH FROM created_at)')
+            ->orderBy('anio', 'desc')
             ->orderBy('mes', 'desc')
             ->take(6)
             ->get();
